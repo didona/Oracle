@@ -80,7 +80,6 @@ public abstract class CubistOracle implements Oracle {
 
    protected abstract void postModelCreation(String pathToModel) throws OracleException;
 
-
    public void addPoint(String features, String target, boolean init) throws OracleException {
       if (init) {
          trainingSetWriter.close();
@@ -132,7 +131,6 @@ public abstract class CubistOracle implements Oracle {
       return modelString();
    }
 
-
    private String modelString() {
       File f = new File(cubistConfig.getTrainingSet());
       f = f.getParentFile();
@@ -142,7 +140,6 @@ public abstract class CubistOracle implements Oracle {
       log.trace("Returning new model " + sb.toString());
       return sb.toString();
    }
-
 
    protected void checkForError(Process p) throws OracleException {
       BufferedReader stderr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
@@ -164,5 +161,8 @@ public abstract class CubistOracle implements Oracle {
          throw new OracleException((read));
    }
 
-
+   @Override
+   public final double query(String features) throws OracleException {
+      return query(features, cubistConfig.getTargetFeature());
+   }
 }

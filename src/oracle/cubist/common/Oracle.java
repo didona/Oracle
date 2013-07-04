@@ -36,6 +36,8 @@ public interface Oracle {
 
    double query(String features, String target) throws OracleException;
 
+   double query(String features) throws OracleException;
+
    void addPoint(String features, String target, boolean init) throws OracleException;
 
    void removePoint(String features, String target) throws OracleException;
