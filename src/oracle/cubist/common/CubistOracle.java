@@ -74,7 +74,8 @@ public abstract class CubistOracle implements Oracle {
       String builtModel;
       if (buildModel) {
          builtModel = createCubistModel(cubistConfig.getTargetFeature());
-      } else builtModel = cubistConfig.getModel();
+      } else
+         builtModel = cubistConfig.getModel();
       postModelCreation(builtModel);
    }
 
@@ -88,6 +89,10 @@ public abstract class CubistOracle implements Oracle {
       }
       trainingSetWriter.println(features);
       trainingSetWriter.flush();
+   }
+
+   public void addPoint(String features, boolean init) throws OracleException {
+      addPoint(features, this.cubistConfig.getTargetFeature(), init);
    }
 
    public void removePoint(String features, String target) {

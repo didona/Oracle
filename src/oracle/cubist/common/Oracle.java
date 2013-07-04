@@ -26,10 +26,8 @@
 package oracle.cubist.common;
 
 
-
 /**
- * @author Diego Didona, didona@gsd.inesc-id.pt
- *         Date: 29/10/12
+ * @author Diego Didona, didona@gsd.inesc-id.pt Date: 29/10/12
  */
 public interface Oracle {
 
@@ -39,6 +37,8 @@ public interface Oracle {
    double query(String features) throws OracleException;
 
    void addPoint(String features, String target, boolean init) throws OracleException;
+
+   void addPoint(String features, boolean init) throws OracleException;
 
    void removePoint(String features, String target) throws OracleException;
 
