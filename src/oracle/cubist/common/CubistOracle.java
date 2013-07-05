@@ -62,11 +62,13 @@ public abstract class CubistOracle implements Oracle {
    private void init(boolean buildModel) throws OracleException {
       if (OracleUtil.fileExists(cubistConfig.getPathToCubist()))
          throw new OracleException(pathToCubist + " not found");
-      trainingSet = new File(cubistConfig.getModel());
+      if(trainingSet==null)
+         trainingSet = new File(cubistConfig.getModel());
       if (!trainingSet.exists())
          throw new OracleException(cubistConfig.getModel() + " not found");
       try {
-         trainingSetWriter = new PrintWriter(trainingSet);
+         if(trainingSetWriter==null)
+            trainingSetWriter = new PrintWriter(trainingSet);
       } catch (FileNotFoundException e) {
          e.printStackTrace();
          throw new OracleException(e.getMessage());
@@ -81,14 +83,18 @@ public abstract class CubistOracle implements Oracle {
 
    protected abstract void postModelCreation(String pathToModel) throws OracleException;
 
+   /**
+    *
+    * @param features
+    * @param target
+    * @param init if true, you rebuild the model after having added the point
+    * @throws OracleException
+    */
    public void addPoint(String features, String target, boolean init) throws OracleException {
-      if (init) {
-         trainingSetWriter.close();
-         trainingSet.delete();
-         init(true);
-      }
       trainingSetWriter.println(features);
       trainingSetWriter.flush();
+      if(init)
+         init(true);
    }
 
    public void addPoint(String features, boolean init) throws OracleException {
