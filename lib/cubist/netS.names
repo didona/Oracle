@@ -1,0 +1,17 @@
+netS
+
+Nodi:continuous
+MexSize:continuous
+NodiSquared:=Nodi*Nodi.
+NodiMenoUno:=Nodi-1.
+NodiMenoUnoSquared:=NodiMenoUno*NodiMenoUno.
+Lambda:continuous
+NanoLambda:=1e-9*Lambda.
+LambdaInv:=1/Lambda.
+OneNodeNetThroughput:=Lambda*MexSize*(Nodi-1)/Nodi.
+TotalNetThroughput:=OneNodeNetThroughput*Nodi.
+netS:continuous
+
+attributes excluded:NanoLambda,NodiMenoUno,NodiMenoUnoSquared,LambdaInv
+
+
