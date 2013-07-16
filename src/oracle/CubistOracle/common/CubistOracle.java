@@ -100,7 +100,19 @@ public abstract class CubistOracle implements Oracle {
       }
       if ((!trainingSet.exists() || trainingSet.length() == 0))
          throw new OracleException("You need a non-empty training set to build a new model");
+      String builtModel;
+      builtModel = createCubistModel(cubistConfig.getTargetFeature());
+      if (builtModel == null)
+         throw new OracleException("Impossible to build model!");
+      postModelCreation(pathToCubist + "/" + cubistConfig.getTargetFeature());
+   }
 
+   private void loadModel() throws OracleException {
+      String builtModel;
+      builtModel = cubistConfig.getModel();
+      if (builtModel != null) {   //if you don't want to build the model yet, do not init it!
+         postModelCreation(pathToCubist + "/" + cubistConfig.getTargetFeature());
+      }
    }
 
 
@@ -112,6 +124,7 @@ public abstract class CubistOracle implements Oracle {
     * @param init     if true, you rebuild the model after having added the point
     * @throws OracleException
     */
+   //TODO: before writing, initialize the structures needed if they are null
    public void addPoint(String features, String target, boolean init) throws OracleException {
       trainingSetWriter.println(features);
       trainingSetWriter.flush();
