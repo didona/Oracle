@@ -44,7 +44,6 @@ public abstract class CubistOracle implements Oracle {
    protected static final String DATA = ".data";
    protected static final String MODEL = ".model";
    protected String pathToCubist;
-   protected String pathToTrainingSet;
 
    private File trainingSet;
    private PrintWriter trainingSetWriter;
@@ -61,17 +60,23 @@ public abstract class CubistOracle implements Oracle {
 
    private void init(boolean buildModel) throws OracleException {
       pathToCubist = cubistConfig.getPathToCubist();
-      if (!OracleUtil.fileExists(pathToCubist))
+      if (!OracleUtil.fileExists(pathToCubist + "/cubist"))
          throw new OracleException(pathToCubist + " not found");
       //If you want to build a new model, you have to prepare a training set first!!
-      if (trainingSet == null)
-         trainingSet = new File(cubistConfig.getTrainingSet());
+      if (trainingSet == null) {
+         trainingSet = new File(pathToCubist + "/" + cubistConfig.getTrainingSet());
+         log.trace("setting training set to " + trainingSet.getAbsolutePath());
+      }
       if ((!trainingSet.exists() || trainingSet.length() == 0) && buildModel)
          throw new OracleException("You need a training set to build a new model");
       try {
+         if (!trainingSet.exists()) {
+            log.trace("Trying to create new trainingSet " + trainingSet.getCanonicalPath());
+            trainingSet.createNewFile();
+         }
          if (trainingSetWriter == null)
             trainingSetWriter = new PrintWriter(trainingSet);
-      } catch (FileNotFoundException e) {
+      } catch (Exception e) {
          e.printStackTrace();
          throw new OracleException(e.getMessage());
       }
@@ -80,9 +85,24 @@ public abstract class CubistOracle implements Oracle {
          builtModel = createCubistModel(cubistConfig.getTargetFeature());
       } else
          builtModel = cubistConfig.getModel();
-      if (builtModel != null)   //if you don't want to build the model yet, do not init it!
-         postModelCreation(builtModel);
+      if (builtModel != null) {   //if you don't want to build the model yet, do not init it!
+         postModelCreation(pathToCubist + "/" + cubistConfig.getTargetFeature());
+      }
    }
+
+
+   private void buildModel() throws OracleException {
+      if (cubistConfig.getTrainingSet() == null)
+         throw new OracleException("You cannot build a model without training set");
+      if (trainingSet == null) {
+         trainingSet = new File(pathToCubist + "/" + cubistConfig.getTrainingSet());
+         log.trace("setting training set to " + trainingSet.getAbsolutePath());
+      }
+      if ((!trainingSet.exists() || trainingSet.length() == 0))
+         throw new OracleException("You need a non-empty training set to build a new model");
+
+   }
+
 
    protected abstract void postModelCreation(String pathToModel) throws OracleException;
 
@@ -109,10 +129,10 @@ public abstract class CubistOracle implements Oracle {
 
    private String[] buildCommand(String filestem) {
       StringBuilder sb = new StringBuilder();
-      sb.append(this.pathToCubist);
+      sb.append(this.pathToCubist + "/cubist");
       sb.append(";");
       sb.append("-f");
-      sb.append(pathToCubist+"/"+filestem+DATA);
+      sb.append(pathToCubist + "/" + filestem);
       int instances = cubistConfig.getInstances();
       int committee = cubistConfig.getCommittee();
       if (instances > 0) {
@@ -144,13 +164,9 @@ public abstract class CubistOracle implements Oracle {
    }
 
    private String modelString() {
-      File f = new File(cubistConfig.getTrainingSet());
-      f = f.getParentFile();
-      StringBuilder sb = new StringBuilder(OracleUtil.slashedPath(f.getAbsolutePath()));
-      sb.append(cubistConfig.getTargetFeature());
-      sb.append(MODEL);
-      log.trace("Returning new model " + sb.toString());
-      return sb.toString();
+      String modelString = cubistConfig.getPathToCubist() + "/" + cubistConfig.getTargetFeature() + MODEL;
+      log.trace("Returning new model " + modelString);
+      return modelString;
    }
 
    protected void checkForError(Process p) throws OracleException {
@@ -177,4 +193,6 @@ public abstract class CubistOracle implements Oracle {
    public final double query(String features) throws OracleException {
       return query(features, cubistConfig.getTargetFeature());
    }
+
+
 }
