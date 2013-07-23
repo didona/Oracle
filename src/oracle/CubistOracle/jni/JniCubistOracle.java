@@ -31,11 +31,8 @@ import oracle.CubistOracle.common.CubistOracle;
 import oracle.CubistOracle.common.OracleException;
 
 /**
- * Created with IntelliJ IDEA.
- * User: diego
- * Date: 09/01/13
- * Time: 10:49
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: diego Date: 09/01/13 Time: 10:49 To change this template use File | Settings | File
+ * Templates.
  */
 public class JniCubistOracle extends CubistOracle {
 
@@ -50,16 +47,21 @@ public class JniCubistOracle extends CubistOracle {
    }
 
    static {
-      System.loadLibrary("cubistJNI");
+
       log.trace("cubistJNI lib correctly loaded");
    }
 
    @Override
    protected void postModelCreation(String model) throws OracleException {
+      if(log.isTraceEnabled()) log.trace("PostModel " + model);
+      System.loadLibrary("cubistJNI");
       initiateCubist(model);
    }
 
    public double query(String features, String target) throws OracleException {
-      return getPrediction(features);
+
+      double pred = getPrediction(features);
+      log.trace("JNI for " + target + ": " + features+" --> "+pred);
+      return pred ;
    }
 }
