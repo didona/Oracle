@@ -51,16 +51,17 @@ public class JniCubistOracle extends CubistOracle {
 
    static {
       log.trace("cubistJNI lib correctly loaded");
+      System.loadLibrary("cubistJNI");
    }
 
    @Override
    protected void postModelCreation(String model) throws OracleException {
       if (log.isTraceEnabled()) log.trace("PostModel " + model);
-      System.loadLibrary("cubistJNI");
       initiateCubist(model);
    }
 
    public double query(String features, String target) throws OracleException {
+      if(log.isTraceEnabled())  log.trace("JNI for " + target + ": " + features);
       double pred = getPrediction(features);
       if (log.isTraceEnabled()) log.trace("JNI for " + target + ": " + features + " --> " + pred);
       return pred;

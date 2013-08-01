@@ -53,7 +53,7 @@ public abstract class CubistOracle implements Oracle {
 
    protected final static Log log = LogFactory.getLog(CubistOracle.class);
 
-   private final static Object monitor = new Object();
+   protected final static Object monitor = new Object();
 
    public CubistOracle(CubistConfig config, boolean buildModel) throws OracleException {
       this.cubistConfig = config;
@@ -89,7 +89,9 @@ public abstract class CubistOracle implements Oracle {
       if (builtModel == null)
          throw new OracleException("Impossible to build model!");
       if (log.isTraceEnabled()) log.trace("PostModelCreation to go");
-      postModelCreation(pathToCubist + "/" + cubistConfig.getTargetFeature());
+      synchronized (monitor) {
+         postModelCreation(pathToCubist + "/" + cubistConfig.getTargetFeature());
+      }
    }
 
    private void loadModel() throws OracleException {
@@ -98,7 +100,9 @@ public abstract class CubistOracle implements Oracle {
       if (log.isTraceEnabled()) log.trace("Loading model " + builtModel);
       if (builtModel != null) {   //if you don't want to build the model yet, do not init it!
          if (log.isTraceEnabled()) log.trace("PostModelCreation to go");
-         postModelCreation(pathToCubist + "/" + cubistConfig.getTargetFeature());
+         synchronized (monitor) {
+            postModelCreation(pathToCubist + "/" + cubistConfig.getTargetFeature());
+         }
       } else
          throw new OracleException("You asked to load a model for " + cubistConfig.getTargetFeature() + ", but the model is not there");
    }
@@ -202,23 +206,10 @@ public abstract class CubistOracle implements Oracle {
 
    @Override
    public final double query(String features) throws OracleException {
-      lock();
-      postModelCreation(pathToCubist + "/" + cubistConfig.getTargetFeature());
-      double value = query(features, cubistConfig.getTargetFeature());
-      unlock();
-      return value;
-   }
-
-
-   private void lock() throws OracleException {
-      try {
-         monitor.wait();
-      } catch (InterruptedException e) {
-         throw new OracleException("Thread interrupted while locking");
+      synchronized (monitor) {
+         postModelCreation(pathToCubist + "/" + cubistConfig.getTargetFeature());
+         return query(features, cubistConfig.getTargetFeature());
       }
-   }
 
-   private void unlock() {
-      monitor.notifyAll();
    }
 }
