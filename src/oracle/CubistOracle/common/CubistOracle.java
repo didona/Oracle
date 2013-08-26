@@ -71,7 +71,8 @@ public abstract class CubistOracle implements Oracle {
 
 
    private void buildModel() throws OracleException {
-      if (log.isTraceEnabled()) log.trace("Building a new model for targetFeature " + cubistConfig.getTargetFeature());
+      if (log.isTraceEnabled())
+         log.trace("Building a new model for targetFeature " + cubistConfig.getTargetFeature());
 
       if (!OracleUtil.fileExists(pathToCubist + "/cubist"))
          throw new OracleException(pathToCubist + " not found");
@@ -106,7 +107,6 @@ public abstract class CubistOracle implements Oracle {
       } else
          throw new OracleException("You asked to load a model for " + cubistConfig.getTargetFeature() + ", but the model is not there");
    }
-
 
    protected abstract void postModelCreation(String pathToModel) throws OracleException;
 
