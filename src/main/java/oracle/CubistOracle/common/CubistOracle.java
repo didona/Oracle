@@ -184,7 +184,6 @@ public abstract class CubistOracle implements Oracle {
             if (errorString == null)
                errorString = new StringBuilder();
             errorString.append(read);
-            //log.fatal(read);
             System.out.println(read);
          }
       } catch (IOException e) {
