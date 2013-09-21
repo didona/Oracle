@@ -60,7 +60,7 @@ public class JniCubistOracle extends CubistOracle {
    }
 
    public double query(String features, String target) throws OracleException {
-      if(log.isDebugEnabled())  log.debug("JNI for " + target + ": " + features);
+      if(log.isTraceEnabled())  log.trace("JNI for " + target + ": " + features);
       double pred = getPrediction(features);
       if (log.isDebugEnabled()) log.debug("JNI for " + target + ": " + features + " --> " + pred);
       return pred;
