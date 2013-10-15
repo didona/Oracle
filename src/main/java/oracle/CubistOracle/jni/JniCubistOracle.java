@@ -37,21 +37,20 @@ import oracle.CubistOracle.common.OracleException;
 public class JniCubistOracle extends CubistOracle {
 
 
+   public JniCubistOracle(CubistConfig config, boolean buildModel) throws OracleException {
+      super(config, buildModel);
+   }
+
+   static {
+      System.loadLibrary("cubistJNI");
+      log.warn("cubistJNI lib correctly loaded");
+   }
 
    private native void initiateCubist(String filename);
 
    private native double getPrediction(String att);
 
    private native double[] getPredictionAndError(String att);
-
-   public JniCubistOracle(CubistConfig config, boolean buildModel) throws OracleException {
-      super(config, buildModel);
-   }
-
-   static {
-      log.trace("cubistJNI lib correctly loaded");
-      System.loadLibrary("cubistJNI");
-   }
 
    @Override
    protected void postModelCreation(String model) throws OracleException {
@@ -60,7 +59,7 @@ public class JniCubistOracle extends CubistOracle {
    }
 
    public double query(String features, String target) throws OracleException {
-      if(log.isTraceEnabled())  log.trace("JNI for " + target + ": " + features);
+      if (log.isTraceEnabled()) log.trace("JNI for " + target + ": " + features);
       double pred = getPrediction(features);
       if (log.isDebugEnabled()) log.debug("JNI for " + target + ": " + features + " --> " + pred);
       return pred;
