@@ -37,6 +37,17 @@ import oracle.CubistOracle.common.OracleException;
 public class JniCubistOracle extends CubistOracle {
 
 
+
+
+   private native void initiateCubist(String filename);
+
+   private native double getPrediction(String att);
+
+   private native double[] getPredictionAndError(String att);
+
+   private native void deallocLastModel();
+
+
    public JniCubistOracle(CubistConfig config, boolean buildModel) throws OracleException {
       super(config, buildModel);
    }
@@ -45,12 +56,6 @@ public class JniCubistOracle extends CubistOracle {
       System.loadLibrary("cubistJNI");
       log.warn("cubistJNI lib correctly loaded");
    }
-
-   private native void initiateCubist(String filename);
-
-   private native double getPrediction(String att);
-
-   private native double[] getPredictionAndError(String att);
 
    @Override
    protected void postModelCreation(String model) throws OracleException {
