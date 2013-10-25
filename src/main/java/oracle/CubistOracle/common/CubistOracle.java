@@ -29,7 +29,12 @@ package oracle.CubistOracle.common;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.Arrays;
 
 /**
@@ -197,9 +202,17 @@ public abstract class CubistOracle implements Oracle {
    @Override
    public final double query(String features) throws OracleException {
       synchronized (monitor) {
-         postModelCreation(pathToCubist + "/" + cubistConfig.getTargetFeature());
-         return query(features, cubistConfig.getTargetFeature());
+         String model = pathToCubist + "/" + cubistConfig.getTargetFeature();
+         try {
+            preQuery(model);
+            return query(features, cubistConfig.getTargetFeature());
+         } finally {
+            postQuery(model);
+         }
       }
-
    }
+
+   protected abstract void preQuery(String s);
+
+   protected abstract void postQuery(String s);
 }

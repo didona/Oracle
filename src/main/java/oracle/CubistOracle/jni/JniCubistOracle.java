@@ -69,4 +69,14 @@ public class JniCubistOracle extends CubistOracle {
       if (log.isDebugEnabled()) log.debug("JNI for " + target + ": " + features + " --> " + pred);
       return pred;
    }
+
+   @Override
+   protected void preQuery(String s) {
+      initiateCubist(s);
+   }
+
+   @Override
+   protected void postQuery(String s) {
+      deallocLastModel();
+   }
 }

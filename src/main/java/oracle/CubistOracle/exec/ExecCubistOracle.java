@@ -26,16 +26,15 @@
 package oracle.CubistOracle.exec;
 
 import oracle.CubistOracle.common.CubistOracle;
-import oracle.CubistOracle.common.OracleUtil;
 import oracle.CubistOracle.common.OracleException;
+import oracle.CubistOracle.common.OracleUtil;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * @author Diego Didona, didona@gsd.inesc-id.pt
- *         Date: 29/10/12
+ * @author Diego Didona, didona@gsd.inesc-id.pt Date: 29/10/12
  */
 
 
@@ -51,9 +50,19 @@ public class ExecCubistOracle extends CubistOracle {
       //no op
    }
 
+   @Override
+   protected void preQuery(String s) {
+      //nop
+   }
+
+   @Override
+   protected void postQuery(String s) {
+      //nop
+   }
+
    public ExecCubistOracle(ExecCubistConfig config, boolean buildModel) throws OracleException {
       super(config, buildModel);
-      this.pathToOracle =  config.getPathToOracle();
+      this.pathToOracle = config.getPathToOracle();
       datasetFolder = dataSetFolder();
    }
 
