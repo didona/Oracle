@@ -26,7 +26,7 @@ JNIEXPORT void JNICALL Java_oracle_CubistOracle_jni_JniCubistOracle_initiateCubi
   CubistModel = GetCommittee(".model");
 }
 
-JNIEXPORT void JNICALL Java_oracle_CubistOracle_jni_JniCubistOracle_deallocLastModel(){
+JNIEXPORT void JNICALL Java_oracle_CubistOracle_jni_JniCubistOracle_deallocLastModel(JNIEnv *env, jobject thisobject){
   FreeCttee(CubistModel);
 }
 
