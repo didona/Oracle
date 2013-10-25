@@ -29,6 +29,8 @@ package oracle.CubistOracle.jni;
 import oracle.CubistOracle.common.CubistConfig;
 import oracle.CubistOracle.common.CubistOracle;
 import oracle.CubistOracle.common.OracleException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Created with IntelliJ IDEA. User: diego Date: 09/01/13 Time: 10:49 To change this template use File | Settings | File
@@ -36,7 +38,9 @@ import oracle.CubistOracle.common.OracleException;
  */
 public class JniCubistOracle extends CubistOracle {
 
-
+   private final static Log log = LogFactory.getLog(JniCubistOracle.class);
+   private final static boolean t = log.isTraceEnabled();
+   private final static boolean d = log.isDebugEnabled();
 
 
    private native void initiateCubist(String filename);
@@ -64,9 +68,9 @@ public class JniCubistOracle extends CubistOracle {
    }
 
    public double query(String features, String target) throws OracleException {
-      if (log.isTraceEnabled()) log.trace("JNI for " + target + ": " + features);
+      if (t) log.trace("JNI for " + target + ": " + features);
       double pred = getPrediction(features);
-      if (log.isDebugEnabled()) log.debug("JNI for " + target + ": " + features + " --> " + pred);
+      if (d) log.debug("JNI for " + target + ": " + features + " --> " + pred);
       return pred;
    }
 
