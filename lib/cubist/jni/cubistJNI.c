@@ -26,6 +26,10 @@ JNIEXPORT void JNICALL Java_oracle_CubistOracle_jni_JniCubistOracle_initiateCubi
   CubistModel = GetCommittee(".model");
 }
 
+JNIEXPORT void JNICALL Java_oracle_CubistOracle_jni_JniCubistOracle_terminateCubist(JNIEnv *env, jobject thisobject, jstring js){
+  FreeCttee(CubistModel);
+}
+
 
 JNIEXPORT jdouble JNICALL Java_oracle_CubistOracle_jni_JniCubistOracle_getPrediction(JNIEnv *env, jobject thisobject, jstring js){
   FILE *F;
