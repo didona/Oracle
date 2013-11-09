@@ -31,6 +31,14 @@ JNIEXPORT jdouble JNICALL Java_oracle_CubistOracle_jni_JniCubistOracle_getPredic
 JNIEXPORT jdoubleArray JNICALL Java_oracle_CubistOracle_jni_JniCubistOracle_getPredictionAndError
   (JNIEnv *, jobject, jstring);
 
+/*
+ * Class:     oracle_CubistOracle_jni_JniCubistOracle
+ * Method:    deallocLastModel
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_oracle_CubistOracle_jni_JniCubistOracle_deallocLastModel
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif
