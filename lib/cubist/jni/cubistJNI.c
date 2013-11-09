@@ -28,7 +28,7 @@ JNIEXPORT void JNICALL Java_oracle_CubistOracle_jni_JniCubistOracle_initiateCubi
 
 JNIEXPORT void JNICALL Java_oracle_CubistOracle_jni_JniCubistOracle_deallocLastModel(JNIEnv *env, jobject thisobject){
   FreeCttee(CubistModel);
-    fclose(F);
+    //fclose(F); //F is actually nto visibile in this scope! Should be global to be deallocated
 }
 
 

@@ -81,6 +81,8 @@ public class JniCubistOracle extends CubistOracle {
 
    @Override
    protected void postQuery(String s) {
+      if(t)
+         log.trace("Dealloc-ing last model") ;
       deallocLastModel();
    }
 }
