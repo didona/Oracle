@@ -38,8 +38,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public class JniCubistOracle extends CubistOracle {
 
-   private final static Log log = LogFactory.getLog(JniCubistOracle.class);
-   private final static boolean t = log.isTraceEnabled();
    private final static boolean d = log.isDebugEnabled();
 
 
