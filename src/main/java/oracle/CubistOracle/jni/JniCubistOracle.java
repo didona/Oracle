@@ -63,7 +63,7 @@ public class JniCubistOracle extends CubistOracle {
 
    @Override
    protected void postModelCreation(String model) throws OracleException {
-      if (log.isTraceEnabled()) log.trace("PostModel " + model);
+      if (t) log.trace("PostModel " + model);
       initiateCubist(model);
    }
 

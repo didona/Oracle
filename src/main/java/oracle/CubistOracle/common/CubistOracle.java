@@ -44,6 +44,7 @@ public abstract class CubistOracle implements Oracle {
    protected static final String DATA = ".data";
    protected static final String MODEL = ".model";
    protected final static Log log = LogFactory.getLog(CubistOracle.class);
+   protected final static boolean t = log.isTraceEnabled();
    protected final static Object monitor = new Object();
    protected String pathToCubist;
    protected CubistConfig cubistConfig;
@@ -65,7 +66,6 @@ public abstract class CubistOracle implements Oracle {
    }
 
    private void buildModel() throws OracleException {
-      final boolean t = log.isTraceEnabled();
       if (t)
          log.trace("Building a new model for targetFeature " + cubistConfig.getTargetFeature());
 
@@ -93,9 +93,9 @@ public abstract class CubistOracle implements Oracle {
    private void loadModel() throws OracleException {
       String builtModel;
       builtModel = cubistConfig.getModel();
-      if (log.isTraceEnabled()) log.trace("Loading model " + builtModel);
+      if (t) log.trace("Loading model " + builtModel);
       if (builtModel != null) {   //if you don't want to build the model yet, do not init it!
-         if (log.isTraceEnabled()) log.trace("PostModelCreation to go");
+         if (t) log.trace("PostModelCreation to go");
          synchronized (monitor) {
             postModelCreation(pathToCubist + "/" + cubistConfig.getTargetFeature());
          }
@@ -114,7 +114,7 @@ public abstract class CubistOracle implements Oracle {
    public void addPoint(String features, String target, boolean init) throws OracleException {
       if (trainingSet == null) {
          trainingSet = new File(pathToCubist + "/" + cubistConfig.getTrainingSet());
-         if (log.isTraceEnabled()) log.trace("setting training set to " + trainingSet.getAbsolutePath());
+         if (t) log.trace("setting training set to " + trainingSet.getAbsolutePath());
       }
       if (trainingSetWriter == null) {
          try {
@@ -162,7 +162,7 @@ public abstract class CubistOracle implements Oracle {
    private String createCubistModel(String filestem) {
       try {
          String[] command = buildCommand(filestem);
-         if (log.isTraceEnabled()) log.trace("Invoking " + Arrays.toString(command));
+         if (t) log.trace("Invoking " + Arrays.toString(command));
          Process p = Runtime.getRuntime().exec(buildCommand(filestem));
          checkForError(p);
          p.destroy();
@@ -175,7 +175,7 @@ public abstract class CubistOracle implements Oracle {
 
    private String modelString() {
       String modelString = cubistConfig.getPathToCubist() + "/" + cubistConfig.getTargetFeature() + MODEL;
-      if (log.isTraceEnabled()) log.trace("Returning new model " + modelString);
+      if (t) log.trace("Returning new model " + modelString);
       return modelString;
    }
 
