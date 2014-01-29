@@ -123,5 +123,8 @@ public class ExecCubistOracle extends CubistOracle {
       return OracleUtil.slashedPath(f.getAbsolutePath());
    }
 
-
+   @Override
+   protected double[] queryWithError(String features) throws OracleException {
+      throw new OracleException("Not supported yet");
+   }
 }

@@ -210,4 +210,6 @@ public abstract class CubistOracle implements Oracle {
    protected abstract void preQuery(String s);
 
    protected abstract void postQuery(String s);
+
+   protected abstract double[] queryWithError(String features) throws OracleException;
 }

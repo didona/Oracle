@@ -29,8 +29,8 @@ package oracle.CubistOracle.jni;
 import oracle.CubistOracle.common.CubistConfig;
 import oracle.CubistOracle.common.CubistOracle;
 import oracle.CubistOracle.common.OracleException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import java.util.Arrays;
 
 /**
  * Created with IntelliJ IDEA. User: diego Date: 09/01/13 Time: 10:49 To change this template use File | Settings | File
@@ -79,8 +79,16 @@ public class JniCubistOracle extends CubistOracle {
 
    @Override
    protected void postQuery(String s) {
-      if(t)
-         log.trace("Dealloc-ing last model") ;
+      if (t)
+         log.trace("Dealloc-ing last model");
       deallocLastModel();
+   }
+
+   @Override
+   protected double[] queryWithError(String features) throws OracleException {
+      if (t) log.trace("JNI for " + cubistConfig.getTargetFeature() + ": " + features);
+      double[] pred = getPredictionAndError(features);
+      if (d) log.debug("JNI for " + cubistConfig.getTargetFeature() + ": " + features + " --> " + Arrays.toString(pred));
+      return pred;
    }
 }
