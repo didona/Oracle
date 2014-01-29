@@ -207,9 +207,24 @@ public abstract class CubistOracle implements Oracle {
       }
    }
 
+   @Override
+   public final double[] queryWithError(String features) throws OracleException {
+      synchronized (monitor) {
+         String model = pathToCubist + "/" + cubistConfig.getTargetFeature();
+         try {
+            preQuery(model);
+            return queryWithError(features, cubistConfig.getTargetFeature());
+         } finally {
+            postQuery(model);
+         }
+      }
+   }
+
    protected abstract void preQuery(String s);
 
    protected abstract void postQuery(String s);
 
-   public abstract double[] queryWithError(String features) throws OracleException;
+   protected abstract double query(String features, String target) throws OracleException;
+
+   protected abstract double[] queryWithError(String features, String target) throws OracleException;
 }

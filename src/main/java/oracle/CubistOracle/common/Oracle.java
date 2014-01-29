@@ -32,9 +32,11 @@ package oracle.CubistOracle.common;
 public interface Oracle {
 
 
-   double query(String features, String target) throws OracleException;
+   //double query(String features, String target) throws OracleException;
 
    double query(String features) throws OracleException;
+
+   double[] queryWithError(String features) throws OracleException;
 
    void addPoint(String features, String target, boolean init) throws OracleException;
 
