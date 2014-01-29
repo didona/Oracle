@@ -211,5 +211,5 @@ public abstract class CubistOracle implements Oracle {
 
    protected abstract void postQuery(String s);
 
-   protected abstract double[] queryWithError(String features) throws OracleException;
+   public abstract double[] queryWithError(String features) throws OracleException;
 }

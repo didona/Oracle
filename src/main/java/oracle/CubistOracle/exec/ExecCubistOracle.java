@@ -124,7 +124,7 @@ public class ExecCubistOracle extends CubistOracle {
    }
 
    @Override
-   protected double[] queryWithError(String features) throws OracleException {
+   public double[] queryWithError(String features) throws OracleException {
       throw new OracleException("Not supported yet");
    }
 }

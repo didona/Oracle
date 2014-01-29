@@ -85,7 +85,7 @@ public class JniCubistOracle extends CubistOracle {
    }
 
    @Override
-   protected double[] queryWithError(String features) throws OracleException {
+   public double[] queryWithError(String features) throws OracleException {
       if (t) log.trace("JNI for " + cubistConfig.getTargetFeature() + ": " + features);
       double[] pred = getPredictionAndError(features);
       if (d) log.debug("JNI for " + cubistConfig.getTargetFeature() + ": " + features + " --> " + Arrays.toString(pred));
