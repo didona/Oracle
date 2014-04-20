@@ -39,6 +39,7 @@ import java.util.Arrays;
 public class JniCubistOracle extends CubistOracle {
 
    private final static boolean d = log.isDebugEnabled();
+   private final static boolean deallocModel = false;
 
 
    private native void initiateCubist(String filename);
@@ -79,9 +80,11 @@ public class JniCubistOracle extends CubistOracle {
 
    @Override
    protected void postQuery(String s) {
-      if (t)
-         log.trace("Dealloc-ing last model");
-      deallocLastModel();
+      if (deallocModel) {
+         if (t)
+            log.trace("Dealloc-ing last model");
+         deallocLastModel();
+      }
    }
 
    @Override
