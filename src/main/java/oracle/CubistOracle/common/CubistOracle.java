@@ -236,4 +236,8 @@ public abstract class CubistOracle implements Oracle {
    public File getTrainingSet() {
       return trainingSet;
    }
+
+   public File getModelFile() {
+      return new File(this.pathToCubist + "/" + cubistConfig.getTargetFeature() + MODEL);
+   }
 }
