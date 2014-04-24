@@ -165,12 +165,29 @@ public abstract class CubistOracle implements Oracle {
          if (t) log.trace("Invoking " + Arrays.toString(command));
          Process p = Runtime.getRuntime().exec(buildCommand(filestem));
          checkForError(p);
+         if (cubistConfig.isPrintModelOnBuild()) {
+            printOutputBuild(p);
+         }
          p.destroy();
       } catch (Exception e) {
          e.printStackTrace();
          throw new RuntimeException("Could not create CubistModel " + e.getMessage());
       }
       return modelString();
+   }
+
+   private void printOutputBuild(Process p) throws OracleException {
+      try {
+         BufferedReader stderr = new BufferedReader(new InputStreamReader(p.getInputStream()));
+         String out;
+         while ((out = stderr.readLine()) != null) {
+            if (log.isTraceEnabled())
+               log.trace(out);
+         }
+      } catch (Exception e) {
+         e.printStackTrace();
+         throw new OracleException(e.getMessage());
+      }
    }
 
    private String modelString() {

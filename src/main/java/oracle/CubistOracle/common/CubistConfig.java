@@ -26,8 +26,7 @@
 package oracle.CubistOracle.common;
 
 /**
- * @author Diego Didona, didona@gsd.inesc-id.pt
- *         Date: 30/10/12
+ * @author Diego Didona, didona@gsd.inesc-id.pt Date: 30/10/12
  */
 public class CubistConfig {
 
@@ -38,7 +37,15 @@ public class CubistConfig {
    private String targetFeature;
    private int instances = 0;
    private int committee = 0;
+   private boolean printModelOnBuild = false;
 
+   public boolean isPrintModelOnBuild() {
+      return printModelOnBuild;
+   }
+
+   public void setPrintModelOnBuild(String printModelOnBuild) {
+      this.printModelOnBuild = Boolean.valueOf(printModelOnBuild);
+   }
 
    public int getInstances() {
       return instances;
