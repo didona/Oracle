@@ -143,8 +143,12 @@ public abstract class CubistOracle implements Oracle {
       sb.append(";");
       sb.append("-f");
       sb.append(pathToCubist).append("/").append(filestem);
-      int instances = cubistConfig.getInstances();
+      int instances = cubistConfig.getNumInstances();
       int committee = cubistConfig.getCommittee();
+      if (cubistConfig.isInstancesAndRules()) {
+         sb.append(";");
+         sb.append("-i");
+      }
       if (instances > 0) {
          sb.append(";");
          sb.append("-n");
@@ -178,9 +182,9 @@ public abstract class CubistOracle implements Oracle {
 
    private void printOutputBuild(Process p) throws OracleException {
       try {
-         BufferedReader stderr = new BufferedReader(new InputStreamReader(p.getInputStream()));
+         BufferedReader stdin = new BufferedReader(new InputStreamReader(p.getInputStream()));
          String out;
-         while ((out = stderr.readLine()) != null) {
+         while ((out = stdin.readLine()) != null) {
             if (log.isTraceEnabled())
                log.trace(out);
          }

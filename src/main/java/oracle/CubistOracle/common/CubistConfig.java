@@ -35,9 +35,18 @@ public class CubistConfig {
    private String trainingSet;
    private String model;
    private String targetFeature;
-   private int instances = 0;
+   private int numInstances = 0;
    private int committee = 0;
    private boolean printModelOnBuild = false;
+   private boolean instancesAndRules = false;
+
+   public boolean isInstancesAndRules() {
+      return instancesAndRules;
+   }
+
+   public void setInstancesAndRules(boolean instancesAndRules) {
+      this.instancesAndRules = instancesAndRules;
+   }
 
    public boolean isPrintModelOnBuild() {
       return printModelOnBuild;
@@ -47,12 +56,12 @@ public class CubistConfig {
       this.printModelOnBuild = Boolean.valueOf(printModelOnBuild);
    }
 
-   public int getInstances() {
-      return instances;
+   public int getNumInstances() {
+      return numInstances;
    }
 
-   public void setInstances(int instances) {
-      this.instances = instances;
+   public void setNumInstances(int numInstances) {
+      this.numInstances = numInstances;
    }
 
    public int getCommittee() {
@@ -102,7 +111,7 @@ public class CubistConfig {
             ", trainingSet='" + trainingSet + '\'' +
             ", model='" + model + '\'' +
             ", targetFeature='" + targetFeature + '\'' +
-            ", instances=" + instances +
+            ", numInstances=" + numInstances +
             ", committee=" + committee +
             '}';
    }
