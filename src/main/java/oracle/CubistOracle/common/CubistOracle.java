@@ -185,23 +185,24 @@ public abstract class CubistOracle implements Oracle {
 
          // Any error message?
          StreamGobbler errorGobbler =
-               new StreamGobbler(p.getErrorStream(), System.err, printErr);
+               new StreamGobbler(p.getErrorStream(), System.err, printErr, true);
 
          // Any output?
          StreamGobbler outputGobbler =
-               new StreamGobbler(p.getInputStream(), System.out, printOut);
+               new StreamGobbler(p.getInputStream(), System.out, printOut, t);
 
          errorGobbler.start();
-         if (t) {
-            outputGobbler.start();
-         }
+         //if (t) {
+         outputGobbler.start();
+         //}
 
-         // Any error?
+
          int exitVal = p.waitFor();
-         errorGobbler.join();   // Handle condition where the
-         if (t) {
-            outputGobbler.join();
-         }  // process ends before the threads finish }
+
+         errorGobbler.join();   // Handle condition where the process ends before the threads finish
+         //if (t) {
+         outputGobbler.join();
+         //}
 
          if (printErr.length() != 0) {
             throw new RuntimeException(printErr.toString());
@@ -339,22 +340,31 @@ public abstract class CubistOracle implements Oracle {
    }
 
    private class StreamGobbler extends Thread {
-      private InputStream is;
-      private PrintStream os;
-      private StringBuffer stringBuffer;
+      private final InputStream is;
+      private final PrintStream os;
+      private final StringBuffer stringBuffer;
+      private final boolean print;
 
-      StreamGobbler(InputStream is, PrintStream os, StringBuffer sb) {
+      StreamGobbler(InputStream is, PrintStream os, StringBuffer sb, boolean print) {
          this.is = is;
          this.os = os;
          this.stringBuffer = sb;
+         this.print = print;
       }
 
+      /**
+       * http://www.javaworld.com/article/2071275/core-java/when-runtime-exec---won-t.html?page=2 It is important that
+       * the stream produced by the process are consumed, in order to avoid blocks However, we do not necessarily want
+       * the stream to be printed, do we? :)
+       */
       public void run() {
          try {
             int c;
             while ((c = is.read()) != -1) {
-               os.print((char) c);
-               stringBuffer.append(c);
+               if (print) {
+                  os.print((char) c);
+                  stringBuffer.append(c);
+               }
             }
          } catch (IOException x) {
             // handle error
