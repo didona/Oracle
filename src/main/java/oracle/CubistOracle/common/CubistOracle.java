@@ -33,7 +33,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Arrays;
 
@@ -163,11 +165,65 @@ public abstract class CubistOracle implements Oracle {
 
    }
 
+   /**
+    * Following https://www.securecoding.cert.org/confluence/display/java/FIO07-J.+Do+not+let+external+processes+block+on+IO+buffers
+    * I am going to rewrite this
+    *
+    * @param filestem
+    * @return
+    */
+
    private String createCubistModel(String filestem) {
+      try {
+         String[] command = buildCommand(filestem);
+         ProcessBuilder pb = new ProcessBuilder(command);
+         if (t) log.trace("Invoking " + Arrays.toString(command));
+         pb = pb.redirectErrorStream(true);
+         Process p = pb.start();
+         StringBuffer printErr = new StringBuffer();
+         StringBuffer printOut = new StringBuffer();
+
+         // Any error message?
+         StreamGobbler errorGobbler =
+               new StreamGobbler(p.getErrorStream(), System.err, printErr);
+
+         // Any output?
+         StreamGobbler outputGobbler =
+               new StreamGobbler(p.getInputStream(), System.out, printOut);
+
+         errorGobbler.start();
+         if (t) {
+            outputGobbler.start();
+         }
+
+         // Any error?
+         int exitVal = p.waitFor();
+         errorGobbler.join();   // Handle condition where the
+         if (t) {
+            outputGobbler.join();
+         }  // process ends before the threads finish }
+
+         if (printErr.length() != 0) {
+            throw new RuntimeException(printErr.toString());
+         }
+         if (cubistConfig.isPrintModelOnBuild()) {
+            printOutputBuild(p);
+         }
+         p.destroy();
+      } catch (Exception e) {
+         e.printStackTrace();
+         throw new RuntimeException("Could not create CubistModel " + e.getMessage());
+      }
+      return modelString();
+   }
+
+
+   private String _blocking_createCubistModel(String filestem) {
       try {
          String[] command = buildCommand(filestem);
          if (t) log.trace("Invoking " + Arrays.toString(command));
          Process p = Runtime.getRuntime().exec(buildCommand(filestem));
+         p.waitFor();
          checkForError(p);
          if (cubistConfig.isPrintModelOnBuild()) {
             printOutputBuild(p);
@@ -198,6 +254,26 @@ public abstract class CubistOracle implements Oracle {
       String modelString = cubistConfig.getPathToCubist() + "/" + cubistConfig.getTargetFeature() + MODEL;
       if (t) log.trace("Returning new model " + modelString);
       return modelString;
+   }
+
+   protected void _blocking_checkForError(Process p) throws OracleException {
+      BufferedReader stderr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+      String read;
+
+      StringBuilder errorString = null;
+      try {
+         while ((read = stderr.readLine()) != null) {
+            if (errorString == null)
+               errorString = new StringBuilder();
+            errorString.append(read);
+            System.out.println(read);
+         }
+      } catch (IOException e) {
+         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+         throw new OracleException(e.getMessage());
+      }
+      if (errorString != null)
+         throw new OracleException((read));
    }
 
    protected void checkForError(Process p) throws OracleException {
@@ -261,4 +337,30 @@ public abstract class CubistOracle implements Oracle {
    public File getModelFile() {
       return new File(this.pathToCubist + "/" + cubistConfig.getTargetFeature() + MODEL);
    }
+
+   private class StreamGobbler extends Thread {
+      private InputStream is;
+      private PrintStream os;
+      private StringBuffer stringBuffer;
+
+      StreamGobbler(InputStream is, PrintStream os, StringBuffer sb) {
+         this.is = is;
+         this.os = os;
+         this.stringBuffer = sb;
+      }
+
+      public void run() {
+         try {
+            int c;
+            while ((c = is.read()) != -1) {
+               os.print((char) c);
+               stringBuffer.append(c);
+            }
+         } catch (IOException x) {
+            // handle error
+         }
+      }
+   }
+
+
 }
